@@ -2,6 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
+import type { CreateSecretRequest } from '../models/CreateSecretRequest';
 import type { Secret } from '../models/Secret';
 import type { SecretStatus } from '../models/SecretStatus';
 import type { CancelablePromise } from 'core-fe-lib/openapi/core/core/CancelablePromise';
@@ -38,6 +39,32 @@ export class DefaultService {
             errors: {
                 401: `Unauthorized`,
                 403: `Forbidden`,
+                500: `Internal server error`,
+            },
+        });
+    }
+    /**
+     * Create a tenant-scoped secret. The plaintext value is
+     * encrypted (AES-256-GCM) before persistence and never echoed
+     * back. Requires ADMIN / CUSTOMER_ADMIN / SUPER_ADMIN.
+     *
+     * @param requestBody
+     * @returns Secret Secret created
+     * @throws ApiError
+     */
+    public static createSecret(
+        requestBody: CreateSecretRequest,
+    ): CancelablePromise<Secret> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/admin-api/v1/secret/secrets',
+            body: requestBody,
+            mediaType: 'application/json',
+            errors: {
+                400: `Invalid request`,
+                401: `Unauthorized`,
+                403: `Forbidden`,
+                409: `A secret with this name already exists for the tenant`,
                 500: `Internal server error`,
             },
         });
