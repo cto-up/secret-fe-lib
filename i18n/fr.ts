@@ -44,4 +44,16 @@ export default {
     notion: "Notion",
     other: "Autre",
   },
+  picker: {
+    loading: "Chargement…",
+    createCta: "Créer un nouveau secret",
+    cancel: "Annuler",
+    save: "Enregistrer le secret",
+    nameLabel: "Nom",
+    descriptionLabel: "Description (optionnel)",
+    docsHint: "Pas encore de clé ?",
+    docsLink: "Obtenir votre {label}",
+    usedBy: "Utilisé par {count} agent",
+    usedByPlural: "Utilisé par {count} agents",
+  },
 };

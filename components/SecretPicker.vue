@@ -41,8 +41,14 @@
             v-if="usageCount(s.name) > 0"
             class="text-[10px] text-muted-foreground mt-0.5"
           >
-            Used by {{ usageCount(s.name) }}
-            {{ usageCount(s.name) === 1 ? "agent" : "agents" }}
+            {{
+              t(
+                usageCount(s.name) === 1
+                  ? "secret.picker.usedBy"
+                  : "secret.picker.usedByPlural",
+                { count: usageCount(s.name) }
+              )
+            }}
           </div>
         </div>
       </div>
@@ -51,7 +57,7 @@
         v-if="loading"
         class="text-center py-2 text-sm text-muted-foreground"
       >
-        Loading…
+        {{ t("secret.picker.loading") }}
       </div>
 
       <Button
@@ -59,18 +65,19 @@
         variant="outline"
         size="sm"
         class="w-full"
-        @click="creating = true"
+        @click="enterCreateMode"
       >
-        <Plus class="h-4 w-4 mr-2" /> Create new secret
+        <Plus class="h-4 w-4 mr-2" /> {{ t("secret.picker.createCta") }}
       </Button>
     </div>
 
     <!-- Inline create form -->
     <div v-else class="rounded-md border p-4 space-y-3 bg-muted/20">
       <div class="space-y-1">
-        <Label for="new-secret-name"
-          >Name <span class="text-destructive">*</span></Label
-        >
+        <Label for="new-secret-name">
+          {{ t("secret.picker.nameLabel") }}
+          <span class="text-destructive">*</span>
+        </Label>
         <Input
           id="new-secret-name"
           v-model="newSecret.name"
@@ -78,9 +85,9 @@
         />
       </div>
       <div class="space-y-1">
-        <Label for="new-secret-value"
-          >{{ valueLabel }} <span class="text-destructive">*</span></Label
-        >
+        <Label for="new-secret-value">
+          {{ valueLabel }} <span class="text-destructive">*</span>
+        </Label>
         <Input
           id="new-secret-value"
           v-model="newSecret.value"
@@ -88,19 +95,21 @@
           :placeholder="valuePlaceholder"
         />
         <p v-if="docsUrl" class="text-xs text-muted-foreground">
-          Need one?
+          {{ t("secret.picker.docsHint") }}
           <a
             :href="docsUrl"
             target="_blank"
             rel="noopener"
             class="underline text-primary"
           >
-            Get your {{ valueLabel }}
+            {{ t("secret.picker.docsLink", { label: valueLabel }) }}
           </a>
         </p>
       </div>
       <div class="space-y-1">
-        <Label for="new-secret-desc">Description (optional)</Label>
+        <Label for="new-secret-desc">
+          {{ t("secret.picker.descriptionLabel") }}
+        </Label>
         <Input id="new-secret-desc" v-model="newSecret.description" />
       </div>
 
@@ -116,7 +125,7 @@
           :disabled="saving"
           @click="cancelCreate"
         >
-          Cancel
+          {{ t("secret.picker.cancel") }}
         </Button>
         <Button
           type="button"
@@ -125,7 +134,7 @@
           @click="save"
         >
           <Loader2 v-if="saving" class="h-3 w-3 mr-2 animate-spin" />
-          Save secret
+          {{ t("secret.picker.save") }}
         </Button>
       </div>
     </div>
@@ -134,6 +143,7 @@
 
 <script lang="ts" setup>
 import { computed, onMounted, ref, watch } from "vue";
+import { useI18n } from "vue-i18n";
 import { DefaultService as SecretService, type Secret } from "../lib";
 import { Button } from "core-fe-lib/components-shadcn/ui/button";
 import { Input } from "core-fe-lib/components-shadcn/ui/input";
@@ -161,6 +171,8 @@ const props = defineProps<{
 const emit = defineEmits<{
   (e: "update:modelValue", v: string | null): void;
 }>();
+
+const { t } = useI18n();
 
 const secrets = ref<Secret[]>([]);
 const usage = ref<Record<string, number>>({});
@@ -202,6 +214,19 @@ async function fetchSecrets() {
 
 function selectExisting(name: string) {
   emit("update:modelValue", name);
+}
+
+function suggestedName(): string {
+  const base = props.connectorType || "secret";
+  if (!secrets.value.some((s) => s.name === base)) return base;
+  let i = 2;
+  while (secrets.value.some((s) => s.name === `${base}_${i}`)) i += 1;
+  return `${base}_${i}`;
+}
+
+function enterCreateMode() {
+  creating.value = true;
+  newSecret.value = { name: suggestedName(), value: "", description: "" };
 }
 
 function cancelCreate() {
