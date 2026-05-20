@@ -71,6 +71,53 @@
       </Button>
     </div>
 
+    <!-- One-time reveal panel (server-generated secret). Shown once after
+         the generate path returns plaintext; the value is never recoverable
+         after the user dismisses this panel. -->
+    <div
+      v-else-if="revealed"
+      class="rounded-md border border-warning/40 p-4 space-y-3 bg-warning/5"
+    >
+      <div class="flex items-start gap-2">
+        <KeyRound class="h-4 w-4 mt-0.5 text-warning shrink-0" />
+        <div>
+          <p class="text-sm font-medium">
+            {{ t("secret.picker.revealTitle") }}
+          </p>
+          <p class="text-xs text-muted-foreground">
+            {{ t("secret.picker.revealBody") }}
+          </p>
+        </div>
+      </div>
+
+      <div class="space-y-1">
+        <Label class="text-xs">{{ t("secret.picker.revealValueLabel") }}</Label>
+        <div class="flex gap-2">
+          <Input
+            :model-value="revealed.value"
+            readonly
+            class="font-mono text-xs"
+          />
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            :title="t('secret.picker.copy')"
+            @click="copyRevealed"
+          >
+            <Check v-if="copied" class="h-3.5 w-3.5" />
+            <Copy v-else class="h-3.5 w-3.5" />
+          </Button>
+        </div>
+      </div>
+
+      <div class="flex justify-end">
+        <Button type="button" size="sm" @click="dismissReveal">
+          {{ t("secret.picker.revealDismiss") }}
+        </Button>
+      </div>
+    </div>
+
     <!-- Inline create form -->
     <div v-else class="rounded-md border p-4 space-y-3 bg-muted/20">
       <div class="space-y-1">
@@ -85,15 +132,28 @@
         />
       </div>
       <div class="space-y-1">
-        <Label for="new-secret-value">
-          {{ valueLabel }} <span class="text-destructive">*</span>
-        </Label>
+        <div class="flex items-center justify-between">
+          <Label for="new-secret-value">
+            {{ valueLabel }} <span class="text-destructive">*</span>
+          </Label>
+          <button
+            type="button"
+            class="text-xs text-primary hover:underline disabled:opacity-50"
+            :disabled="saving"
+            @click="generate"
+          >
+            {{ t("secret.picker.generateCta") }}
+          </button>
+        </div>
         <Input
           id="new-secret-value"
           v-model="newSecret.value"
           type="password"
           :placeholder="valuePlaceholder"
         />
+        <p class="text-xs text-muted-foreground">
+          {{ t("secret.picker.generateHint") }}
+        </p>
         <p v-if="docsUrl" class="text-xs text-muted-foreground">
           {{ t("secret.picker.docsHint") }}
           <a
@@ -148,7 +208,7 @@ import { DefaultService as SecretService, type Secret } from "../lib";
 import { Button } from "core-fe-lib/components-shadcn/ui/button";
 import { Input } from "core-fe-lib/components-shadcn/ui/input";
 import { Label } from "core-fe-lib/components-shadcn/ui/label";
-import { Loader2, Plus } from "lucide-vue-next";
+import { Check, Copy, KeyRound, Loader2, Plus } from "lucide-vue-next";
 
 export interface SecretUsage {
   secretName: string;
@@ -180,6 +240,11 @@ const loading = ref(false);
 const creating = ref(false);
 const saving = ref(false);
 const createError = ref("");
+// One-time reveal of a server-generated secret. Populated by `generate`;
+// cleared by `dismissReveal`. While set, the picker shows the reveal panel
+// instead of the form so the user must explicitly acknowledge the value.
+const revealed = ref<{ name: string; value: string } | null>(null);
+const copied = ref(false);
 
 function usageCount(name: string): number {
   return usage.value[name] ?? 0;
@@ -258,6 +323,57 @@ async function save() {
   } finally {
     saving.value = false;
   }
+}
+
+// generate calls the server-side generator (POST /admin-api/v1/secret/secrets/generate).
+// The server mints + stores the random value and returns the plaintext exactly
+// once. We surface it via the reveal panel and immediately select the new
+// secret so the consuming form can save.
+async function generate() {
+  if (!newSecret.value.name.trim()) {
+    createError.value = "Name is required before generating.";
+    return;
+  }
+  saving.value = true;
+  createError.value = "";
+  try {
+    const res = await SecretService.generateSecret({
+      name: newSecret.value.name.trim(),
+      connector_type: props.connectorType,
+      description: newSecret.value.description || undefined,
+    });
+    const createdName = newSecret.value.name.trim();
+    revealed.value = { name: createdName, value: res.value };
+    copied.value = false;
+    await fetchSecrets();
+    emit("update:modelValue", createdName);
+    creating.value = false;
+  } catch (e: any) {
+    createError.value =
+      e?.body?.message || e?.message || "Failed to generate secret";
+  } finally {
+    saving.value = false;
+  }
+}
+
+async function copyRevealed() {
+  if (!revealed.value) return;
+  try {
+    await navigator.clipboard.writeText(revealed.value.value);
+    copied.value = true;
+    setTimeout(() => {
+      copied.value = false;
+    }, 1500);
+  } catch {
+    // Clipboard API can fail in non-secure contexts; user can still
+    // triple-click + Cmd-C the readonly input.
+  }
+}
+
+function dismissReveal() {
+  revealed.value = null;
+  copied.value = false;
+  newSecret.value = { name: "", value: "", description: "" };
 }
 
 watch(() => props.connectorType, fetchSecrets);

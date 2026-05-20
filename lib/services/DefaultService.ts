@@ -3,6 +3,8 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { CreateSecretRequest } from '../models/CreateSecretRequest';
+import type { GeneratedSecret } from '../models/GeneratedSecret';
+import type { GenerateSecretRequest } from '../models/GenerateSecretRequest';
 import type { Secret } from '../models/Secret';
 import type { SecretStatus } from '../models/SecretStatus';
 import type { CancelablePromise } from 'core-fe-lib/openapi/core/core/CancelablePromise';
@@ -58,6 +60,40 @@ export class DefaultService {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/admin-api/v1/secret/secrets',
+            body: requestBody,
+            mediaType: 'application/json',
+            errors: {
+                400: `Invalid request`,
+                401: `Unauthorized`,
+                403: `Forbidden`,
+                409: `A secret with this name already exists for the tenant`,
+                500: `Internal server error`,
+            },
+        });
+    }
+    /**
+     * Mint a new secret with a strong random value generated server-side
+     * (crypto/rand, hex-encoded). The plaintext is returned exactly once
+     * in the response so the caller can copy it; it is never recoverable
+     * afterwards.
+     *
+     * Use this instead of the regular POST /secrets when the caller does
+     * not have a pre-existing value (e.g. webhook HMAC keys, internal
+     * signing keys). Use the regular POST when integrating with a third
+     * party that already issued you a token.
+     *
+     * Requires ADMIN / CUSTOMER_ADMIN / SUPER_ADMIN.
+     *
+     * @param requestBody
+     * @returns GeneratedSecret Secret generated and stored. Capture `value` now — it will not be shown again.
+     * @throws ApiError
+     */
+    public static generateSecret(
+        requestBody: GenerateSecretRequest,
+    ): CancelablePromise<GeneratedSecret> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/admin-api/v1/secret/secrets/generate',
             body: requestBody,
             mediaType: 'application/json',
             errors: {

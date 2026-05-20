@@ -55,5 +55,14 @@ export default {
     docsLink: "Get your {label}",
     usedBy: "Used by {count} agent",
     usedByPlural: "Used by {count} agents",
+    generateCta: "Generate a strong random value",
+    generateHint:
+      "Or click \"Generate\" above to have the server mint a cryptographically strong random value.",
+    revealTitle: "Secret created — copy it now",
+    revealBody:
+      "This value is shown exactly once. After you dismiss this panel it cannot be retrieved.",
+    revealValueLabel: "Generated value",
+    revealDismiss: "I've copied it",
+    copy: "Copy to clipboard",
   },
 };
