@@ -57,7 +57,7 @@ export default {
     usedByPlural: "Utilisé par {count} agents",
     generateCta: "Générer une valeur aléatoire forte",
     generateHint:
-      "Ou cliquez sur \"Générer\" ci-dessus pour que le serveur produise une valeur cryptographiquement forte.",
+      'Ou cliquez sur "Générer" ci-dessus pour que le serveur produise une valeur cryptographiquement forte.',
     revealTitle: "Secret créé — copiez-le maintenant",
     revealBody:
       "Cette valeur ne s'affiche qu'une seule fois. Après fermeture de ce panneau, elle ne pourra plus être récupérée.",

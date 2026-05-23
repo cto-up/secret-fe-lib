@@ -2,7 +2,12 @@
 import { computed, onMounted, ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { DefaultService as SecretService, type Secret } from "../lib";
-import { Card, CardContent, CardHeader, CardTitle } from "core-fe-lib/components-shadcn/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "core-fe-lib/components-shadcn/ui/card";
 import { Button } from "core-fe-lib/components-shadcn/ui/button";
 import { Input } from "core-fe-lib/components-shadcn/ui/input";
 import { Label } from "core-fe-lib/components-shadcn/ui/label";
@@ -228,9 +233,7 @@ onMounted(fetchSecrets);
         <div class="flex items-center gap-2">
           <Select v-model="connectorFilter">
             <SelectTrigger class="w-44">
-              <SelectValue
-                :placeholder="$t('secret.filterPlaceholder')"
-              />
+              <SelectValue :placeholder="$t('secret.filterPlaceholder')" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="__all__">
@@ -280,16 +283,10 @@ onMounted(fetchSecrets);
           <TableHeader>
             <TableRow>
               <TableHead>{{ $t("secret.columns.name") }}</TableHead>
-              <TableHead>{{
-                $t("secret.columns.connector")
-              }}</TableHead>
-              <TableHead>{{
-                $t("secret.columns.description")
-              }}</TableHead>
+              <TableHead>{{ $t("secret.columns.connector") }}</TableHead>
+              <TableHead>{{ $t("secret.columns.description") }}</TableHead>
               <TableHead>{{ $t("secret.columns.status") }}</TableHead>
-              <TableHead>{{
-                $t("secret.columns.updated")
-              }}</TableHead>
+              <TableHead>{{ $t("secret.columns.updated") }}</TableHead>
               <TableHead class="text-right">{{
                 $t("secret.columns.actions")
               }}</TableHead>

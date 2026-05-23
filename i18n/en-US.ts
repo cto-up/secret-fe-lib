@@ -21,8 +21,7 @@ export default {
   deleted: "Secret deleted.",
   deleteFailed: "Delete failed.",
   deleteTitle: "Delete this secret?",
-  deleteMessage:
-    '"{name}" will be permanently deleted. This cannot be undone.',
+  deleteMessage: '"{name}" will be permanently deleted. This cannot be undone.',
   nameLabel: "Technical name",
   connectorLabel: "Connector type",
   valueLabel: "Value",
@@ -57,7 +56,7 @@ export default {
     usedByPlural: "Used by {count} agents",
     generateCta: "Generate a strong random value",
     generateHint:
-      "Or click \"Generate\" above to have the server mint a cryptographically strong random value.",
+      'Or click "Generate" above to have the server mint a cryptographically strong random value.',
     revealTitle: "Secret created — copy it now",
     revealBody:
       "This value is shown exactly once. After you dismiss this panel it cannot be retrieved.",
