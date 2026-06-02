@@ -259,21 +259,25 @@ const canCreate = computed(
 async function fetchSecrets() {
   loading.value = true;
   try {
-    const [list, usageList] = await Promise.all([
-      SecretService.listSecrets(undefined, props.connectorType),
-      props.fetchUsage?.() ?? Promise.resolve([] as SecretUsage[]),
-    ]);
+    const list = await SecretService.listSecrets(undefined, props.connectorType);
     secrets.value = (list as Secret[]) ?? [];
+  } catch {
+    secrets.value = [];
+  } finally {
+    loading.value = false;
+  }
+  // Usage annotation is best-effort and decorative — fetched separately so a
+  // failing (or removed) usage endpoint can never blank the secret list, which
+  // would make a just-created secret look like it didn't get selected.
+  try {
+    const usageList = (await props.fetchUsage?.()) ?? [];
     const map: Record<string, number> = {};
-    for (const u of usageList ?? []) {
+    for (const u of usageList) {
       map[u.secretName] = u.usageCount;
     }
     usage.value = map;
   } catch {
-    secrets.value = [];
     usage.value = {};
-  } finally {
-    loading.value = false;
   }
 }
 

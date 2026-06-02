@@ -100,7 +100,7 @@ async function fetchSecrets() {
   } catch (e) {
     toast({
       variant: "destructive",
-      title: $t("secret.fetchFailed"),
+      title: t("secret.fetchFailed"),
       description: (e as { body?: { message?: string } })?.body?.message,
     });
     secrets.value = [];
@@ -147,12 +147,12 @@ async function submitCreate() {
       description: newSecret.value.description.trim() || undefined,
     });
     createOpen.value = false;
-    toast({ title: $t("secret.created") });
+    toast({ title: t("secret.created") });
     await fetchSecrets();
   } catch (e) {
     toast({
       variant: "destructive",
-      title: $t("secret.createFailed"),
+      title: t("secret.createFailed"),
       description:
         (e as { body?: { message?: string; error?: string } })?.body?.message ??
         (e as { body?: { error?: string } })?.body?.error,
@@ -165,20 +165,20 @@ async function submitCreate() {
 // --- Row-level actions ---------------------------------------------
 async function onRevoke(s: Secret) {
   const confirmed = await dialog({
-    title: $t("secret.revokeTitle"),
-    message: $t("secret.revokeMessage", { name: s.name }),
-    ok: $t("secret.revoke"),
+    title: t("secret.revokeTitle"),
+    message: t("secret.revokeMessage", { name: s.name }),
+    ok: t("secret.revoke"),
     cancel: t("actions.cancel"),
   });
   if (!confirmed) return;
   try {
     await SecretService.revokeSecret(s.id);
-    toast({ title: $t("secret.revoked") });
+    toast({ title: t("secret.revoked") });
     await fetchSecrets();
   } catch (e) {
     toast({
       variant: "destructive",
-      title: $t("secret.revokeFailed"),
+      title: t("secret.revokeFailed"),
       description: (e as { body?: { message?: string } })?.body?.message,
     });
   }
@@ -186,20 +186,20 @@ async function onRevoke(s: Secret) {
 
 async function onDelete(s: Secret) {
   const confirmed = await dialog({
-    title: $t("secret.deleteTitle"),
-    message: $t("secret.deleteMessage", { name: s.name }),
+    title: t("secret.deleteTitle"),
+    message: t("secret.deleteMessage", { name: s.name }),
     ok: t("actions.delete"),
     cancel: t("actions.cancel"),
   });
   if (!confirmed) return;
   try {
     await SecretService.deleteSecret(s.id);
-    toast({ title: $t("secret.deleted") });
+    toast({ title: t("secret.deleted") });
     await fetchSecrets();
   } catch (e) {
     toast({
       variant: "destructive",
-      title: $t("secret.deleteFailed"),
+      title: t("secret.deleteFailed"),
       description: (e as { body?: { message?: string } })?.body?.message,
     });
   }
