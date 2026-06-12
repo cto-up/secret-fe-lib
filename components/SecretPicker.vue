@@ -259,7 +259,10 @@ const canCreate = computed(
 async function fetchSecrets() {
   loading.value = true;
   try {
-    const list = await SecretService.listSecrets(undefined, props.connectorType);
+    const list = await SecretService.listSecrets(
+      undefined,
+      props.connectorType
+    );
     secrets.value = (list as Secret[]) ?? [];
   } catch {
     secrets.value = [];
