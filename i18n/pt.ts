@@ -21,7 +21,8 @@ export default {
   deleted: "Segredo eliminado.",
   deleteFailed: "Falha ao eliminar.",
   deleteTitle: "Eliminar este segredo?",
-  deleteMessage: '"{name}" será eliminado definitivamente. Esta ação não pode ser anulada.',
+  deleteMessage:
+    '"{name}" será eliminado definitivamente. Esta ação não pode ser anulada.',
   nameLabel: "Nome técnico",
   connectorLabel: "Tipo de conector",
   valueLabel: "Valor",

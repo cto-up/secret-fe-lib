@@ -21,7 +21,8 @@ export default {
   deleted: "Secret gelöscht.",
   deleteFailed: "Löschen fehlgeschlagen.",
   deleteTitle: "Dieses Secret löschen?",
-  deleteMessage: '„{name}" wird dauerhaft gelöscht. Dies kann nicht rückgängig gemacht werden.',
+  deleteMessage:
+    '„{name}" wird dauerhaft gelöscht. Dies kann nicht rückgängig gemacht werden.',
   nameLabel: "Technischer Name",
   connectorLabel: "Konnektortyp",
   valueLabel: "Wert",

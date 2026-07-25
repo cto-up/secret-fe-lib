@@ -21,7 +21,8 @@ export default {
   deleted: "Segreto eliminato.",
   deleteFailed: "Eliminazione non riuscita.",
   deleteTitle: "Eliminare questo segreto?",
-  deleteMessage: '"{name}" verrà eliminato definitivamente. Questa operazione non può essere annullata.',
+  deleteMessage:
+    '"{name}" verrà eliminato definitivamente. Questa operazione non può essere annullata.',
   nameLabel: "Nome tecnico",
   connectorLabel: "Tipo di connettore",
   valueLabel: "Valore",

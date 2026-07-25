@@ -21,7 +21,8 @@ export default {
   deleted: "Secreto eliminado.",
   deleteFailed: "Error al eliminar.",
   deleteTitle: "¿Eliminar este secreto?",
-  deleteMessage: '"{name}" se eliminará de forma permanente. Esta acción no se puede deshacer.',
+  deleteMessage:
+    '"{name}" se eliminará de forma permanente. Esta acción no se puede deshacer.',
   nameLabel: "Nombre técnico",
   connectorLabel: "Tipo de conector",
   valueLabel: "Valor",
