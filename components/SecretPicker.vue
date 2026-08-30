@@ -123,7 +123,7 @@
       <div class="space-y-1">
         <Label for="new-secret-name">
           {{ t("secret.picker.nameLabel") }}
-          <span class="text-destructive">*</span>
+          <span class="text-error">*</span>
         </Label>
         <Input
           id="new-secret-name"
@@ -134,7 +134,7 @@
       <div class="space-y-1">
         <div class="flex items-center justify-between">
           <Label for="new-secret-value">
-            {{ valueLabel }} <span class="text-destructive">*</span>
+            {{ valueLabel }} <span class="text-error">*</span>
           </Label>
           <button
             type="button"
@@ -173,7 +173,7 @@
         <Input id="new-secret-desc" v-model="newSecret.description" />
       </div>
 
-      <div v-if="createError" class="text-sm text-destructive">
+      <div v-if="createError" class="text-sm text-error">
         {{ createError }}
       </div>
 

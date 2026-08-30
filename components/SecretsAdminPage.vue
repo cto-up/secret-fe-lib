@@ -328,7 +328,7 @@ onMounted(fetchSecrets);
                 <Button
                   variant="ghost"
                   size="icon"
-                  class="h-7 w-7 text-destructive"
+                  class="h-7 w-7 text-error"
                   :title="t('actions.delete')"
                   @click="onDelete(s)"
                 >
@@ -358,7 +358,7 @@ onMounted(fetchSecrets);
           <div class="space-y-1.5">
             <Label for="secret-name">
               {{ $t("secret.nameLabel") }}
-              <span class="text-destructive">*</span>
+              <span class="text-error">*</span>
             </Label>
             <Input
               id="secret-name"
@@ -371,7 +371,7 @@ onMounted(fetchSecrets);
           <div class="space-y-1.5">
             <Label for="secret-connector">
               {{ $t("secret.connectorLabel") }}
-              <span class="text-destructive">*</span>
+              <span class="text-error">*</span>
             </Label>
             <Input
               id="secret-connector"
@@ -383,7 +383,7 @@ onMounted(fetchSecrets);
           <div class="space-y-1.5">
             <Label for="secret-value">
               {{ $t("secret.valueLabel") }}
-              <span class="text-destructive">*</span>
+              <span class="text-error">*</span>
             </Label>
             <Input
               id="secret-value"
