@@ -1,6 +1,6 @@
 import type { HubModule } from "core-fe-lib/components-shadcn/shell/types";
 import { secretRoutes } from "./routes";
-import { getSecretLinks } from "./links";
+import { getSecretLinks, type SecretNavSection } from "./links";
 import enUS from "./i18n/en-US";
 import fr from "./i18n/fr";
 import es from "./i18n/es";
@@ -14,6 +14,11 @@ export interface SecretModuleOptions {
   landingPath?: string;
   landingPriority?: number;
   navIcon?: string;
+  /** File Secrets as one entry of a shared section (e.g. Settings, next to
+   *  the other keys) instead of a section of its own. A shared section sits
+   *  where its first contributor is registered, so register this module after
+   *  the section's anchor. */
+  section?: SecretNavSection;
 }
 
 export function createSecretModule(opts: SecretModuleOptions = {}): HubModule {
@@ -25,7 +30,8 @@ export function createSecretModule(opts: SecretModuleOptions = {}): HubModule {
     landingPath: opts.landingPath,
     landingPriority: opts.landingPriority,
     routes: (layouts) => secretRoutes(layouts.MainLayout),
-    navLinks: (ctx) => getSecretLinks(ctx.t, opts.navIcon ?? "lock"),
+    navLinks: (ctx) =>
+      getSecretLinks(ctx.t, opts.navIcon ?? "lock", opts.section),
     messages: { "en-US": enUS, fr, es, it, de, pt },
   };
 }
